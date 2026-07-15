@@ -44,20 +44,17 @@ export async function POST(req: Request) {
     await OTP.findOneAndDelete({ email }); // Delete any existing OTP for this email
     await OTP.create({ email, otp: otpCode });
 
-    // Setup Ethereal Email (Fake SMTP for testing)
-    const testAccount = await nodemailer.createTestAccount();
+    // Setup Gmail SMTP
     const transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
+      service: "gmail",
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    const info = await transporter.sendMail({
-      from: '"Hangova Security" <security@hangova.com>',
+    await transporter.sendMail({
+      from: `"Hangova" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Your Hangova Verification Code",
       text: `Welcome to Hangova! Your verification code is: ${otpCode}. It expires in 10 minutes.`,
@@ -71,13 +68,9 @@ export async function POST(req: Request) {
       `,
     });
 
-    console.log("OTP Email Sent! Preview URL: %s", nodemailer.getTestMessageUrl(info));
-
     return NextResponse.json({ 
       success: true, 
-      message: "OTP sent successfully",
-      // We pass back the preview URL just so the frontend can show it in Dev mode
-      previewUrl: nodemailer.getTestMessageUrl(info)
+      message: "OTP sent successfully"
     });
 
   } catch (error: any) {

@@ -27,6 +27,7 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [otpError, setOtpError] = useState("");
     const [isProcessing, setIsProcessing] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState("");
     
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
@@ -319,13 +320,27 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                         setIsProcessing(true);
                         
                         if (authMode === "signup") {
-                            // Simulate sending OTP
-                            setTimeout(() => {
+                            fetch("/api/auth/send-otp", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ username, email, password })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
                                 setIsProcessing(false);
-                                setAuthStep("otp");
-                            }, 1000);
+                                if (data.error) {
+                                    setEmailError(data.error);
+                                } else {
+                                    if (data.previewUrl) setPreviewUrl(data.previewUrl);
+                                    setAuthStep("otp");
+                                }
+                            })
+                            .catch(err => {
+                                setIsProcessing(false);
+                                setEmailError("Failed to send verification code");
+                            });
                         } else {
-                            // Direct login
+                            // Direct login (TODO: implement real login API)
                             onLogin();
                         }
                     }} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -544,16 +559,25 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                                 setOtpError("Please enter all 6 digits");
                                 return;
                             }
-                            // Mock verification
                             setIsProcessing(true);
-                            setTimeout(() => {
+                            fetch("/api/auth/verify-otp", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ email, otp: code })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
                                 setIsProcessing(false);
-                                if (code === "123456") {
-                                    onLogin();
+                                if (data.error) {
+                                    setOtpError(data.error);
                                 } else {
-                                    setOtpError("Invalid code. Try 123456");
+                                    onLogin();
                                 }
-                            }, 1000);
+                            })
+                            .catch(err => {
+                                setIsProcessing(false);
+                                setOtpError("Verification failed");
+                            });
                         }} disabled={isProcessing} style={{
                             width: "100%", padding: "15px",
                             background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
@@ -565,13 +589,29 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                             {isProcessing ? "Verifying..." : "Verify & Join"}
                         </button>
                         
-                        <div style={{ marginTop: "24px", display: "flex", gap: "16px", fontSize: "13px" }}>
+                        <div style={{ marginTop: "24px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px", fontSize: "13px" }}>
                             <button onClick={() => setAuthStep("form")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer" }}>
                                 ← Back
                             </button>
-                            <button style={{ background: "none", border: "none", color: "rgba(139,92,246,0.8)", cursor: "pointer" }}>
+                            <button onClick={() => {
+                                setOtpError("Sending new code...");
+                                fetch("/api/auth/send-otp", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ username, email, password })
+                                }).then(res=>res.json()).then(d => {
+                                    if(d.previewUrl) setPreviewUrl(d.previewUrl);
+                                    setOtpError("Code resent!");
+                                    setTimeout(()=>setOtpError(""), 2000);
+                                });
+                            }} style={{ background: "none", border: "none", color: "rgba(139,92,246,0.8)", cursor: "pointer" }}>
                                 Resend Code
                             </button>
+                            {previewUrl && (
+                                <a href={previewUrl} target="_blank" rel="noreferrer" style={{ color: "#ec4899", textDecoration: "none", width: "100%", marginTop: "12px" }}>
+                                    [Dev Mode] Click here to view email
+                                </a>
+                            )}
                         </div>
                     </div>
                     </>

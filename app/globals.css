@@ -35,14 +35,14 @@
 
 body {
     font-family: 'Outfit', sans-serif;
-    background-color: var(--bg-base);
+    background-color: transparent;
     color: var(--text-primary);
     height: 100vh;
     overflow: hidden;
-    background-image: 
-        radial-gradient(circle at 10% 40%, rgba(124, 58, 237, 0.08), transparent 30%),
-        radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.06), transparent 30%),
-        radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.05), transparent 40%);
+}
+
+h1, h2, h3, h4, h5, h6, .settings-title, .dashboard-title {
+    font-family: var(--font-space-grotesk), sans-serif;
 }
 
 .app-container {
@@ -868,4 +868,74 @@ input:checked + .toggle-slider:before {
 
 .settings-range::-webkit-slider-thumb:hover {
     transform: scale(1.2);
+}
+
+/* --- Advanced Buttons --- */
+.btn-advanced {
+    position: relative;
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--font-space-grotesk), sans-serif;
+    color: #fff;
+    background: var(--bg-tertiary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-advanced::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #0ea5e9, #8b5cf6, #ec4899);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-advanced::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    z-index: -1;
+    transition: background 0.3s ease;
+}
+
+.btn-advanced:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+    border-color: transparent;
+}
+
+.btn-advanced:hover::before {
+    opacity: 1;
+}
+
+.btn-advanced:hover::after {
+    background: var(--bg-secondary);
+}
+
+.btn-advanced:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+}
+
+.btn-advanced.primary {
+    background: transparent;
+    border: none;
+}
+
+.btn-advanced.primary::after {
+    background: var(--bg-base);
+}
+
+.btn-advanced.primary:hover::after {
+    background: rgba(10, 10, 15, 0.9);
 }

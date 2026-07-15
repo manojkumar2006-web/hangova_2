@@ -479,18 +479,11 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                             </div>
                         )}
 
-                        <button type="submit" disabled={isProcessing} style={{
-                            width: "100%", padding: "15px",
-                            background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
-                            color: "#fff", border: "none", borderRadius: "12px",
-                            fontWeight: 700, fontSize: "16px", cursor: isProcessing ? "wait" : "pointer",
-                            marginTop: "8px",
-                            opacity: isProcessing ? 0.7 : 1,
-                            boxShadow: "0 8px 24px rgba(139,92,246,0.35)",
-                            transition: "transform 0.2s, box-shadow 0.2s",
-                        }}
-                            onMouseOver={e => { if(!isProcessing) { (e.currentTarget as HTMLElement).style.transform = "scale(1.02)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 30px rgba(139,92,246,0.5)"; } }}
-                            onMouseOut={e => { if(!isProcessing) { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(139,92,246,0.35)"; } }}
+                        <button 
+                            type="submit" 
+                            disabled={isProcessing} 
+                            className="btn-advanced"
+                            style={{ width: "100%", marginTop: "8px", opacity: isProcessing ? 0.7 : 1, cursor: isProcessing ? "wait" : "pointer" }}
                         >
                             {isProcessing ? "Processing..." : (authMode === "login" ? "Enter Hangova ✨" : "Join the Gang 🚀")}
                         </button>
@@ -579,16 +572,13 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                                 setIsProcessing(false);
                                 setOtpError("Verification failed");
                             });
-                        }} disabled={isProcessing} style={{
-                            width: "100%", padding: "15px",
-                            background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
-                            color: "#fff", border: "none", borderRadius: "12px",
-                            fontWeight: 700, fontSize: "16px", cursor: isProcessing ? "wait" : "pointer",
-                            opacity: isProcessing ? 0.7 : 1,
-                            boxShadow: "0 8px 24px rgba(139,92,246,0.35)",
-                        }}>
-                            {isProcessing ? "Verifying..." : "Verify & Join"}
-                        </button>
+                        }}
+                        disabled={isProcessing || otp.some(v => !v)}
+                        className="btn-advanced"
+                        style={{ width: "100%", opacity: (isProcessing || otp.some(v => !v)) ? 0.5 : 1, cursor: (isProcessing || otp.some(v => !v)) ? "not-allowed" : "pointer" }}
+                    >
+                        {isProcessing ? "Verifying..." : "Verify & Join"}
+                    </button>
                         
                         <div style={{ marginTop: "24px", display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px", fontSize: "13px" }}>
                             <button onClick={() => setAuthStep("form")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer" }}>

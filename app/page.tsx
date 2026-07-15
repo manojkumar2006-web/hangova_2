@@ -9,6 +9,7 @@ type Tab = "home" | "movies" | "music" | "reels" | "dms" | "profile";
 export default function HangovaUI() {
     const [activeTab, setActiveTab] = useState<Tab>("home");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState<{username: string, email: string} | null>(null);
     const [showAuth, setShowAuth] = useState(false);
     const [activeChannel, setActiveChannel] = useState<string>("home-dash");
     
@@ -266,37 +267,42 @@ export default function HangovaUI() {
             return (
                 <div className="settings-container">
                     {activeChannel === 'account' && (
-                        <div className="settings-section">
+                        <div className="settings-section glass-panel">
                             <div className="settings-header">
                                 <h3 className="settings-title">My Account</h3>
                                 <p className="settings-subtitle">Manage your personal information and security.</p>
                             </div>
+                            
                             <div className="setting-row">
                                 <div className="setting-info">
                                     <h4>Profile Picture</h4>
                                     <p>Update your avatar</p>
                                 </div>
-                                <div className="msg-avatar user-avatar" style={{width: '64px', height: '64px', fontSize: '24px', cursor: 'pointer'}}>U</div>
+                                <div className="avatar-large">{user?.username?.[0]?.toUpperCase() || 'U'}</div>
                             </div>
+                            
                             <div className="setting-row">
                                 <div className="setting-info">
                                     <h4>Username</h4>
-                                    <p>User123</p>
+                                    <p>{user?.username || 'User123'}</p>
                                 </div>
-                                <button className="emoji-btn" style={{padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)'}}>Edit</button>
+                                <button className="btn-secondary">Edit</button>
                             </div>
+                            
                             <div className="setting-row">
                                 <div className="setting-info">
                                     <h4>Email Address</h4>
-                                    <p>user@hangova.com</p>
+                                    <p>{user?.email || 'user@hangova.com'}</p>
                                 </div>
-                                <button className="emoji-btn" style={{padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)'}}>Edit</button>
+                                <button className="btn-secondary">Edit</button>
                             </div>
-                            <div className="setting-row" style={{marginTop: '20px', borderTop: '1px solid rgba(239,68,68,0.2)', paddingTop: '20px'}}>
+                            
+                            <div className="setting-row danger-zone">
                                 <div className="setting-info">
-                                    <h4 style={{color: '#ef4444'}}>Danger Zone</h4>
+                                    <h4>Danger Zone</h4>
+                                    <p>Permanently delete your account and all data.</p>
                                 </div>
-                                <button className="emoji-btn" style={{padding: '8px 16px', borderRadius: '8px', background: 'rgba(239,68,68,0.2)', color: '#ef4444'}}>Delete Account</button>
+                                <button className="btn-danger">Delete Account</button>
                             </div>
                         </div>
                     )}
@@ -473,7 +479,7 @@ export default function HangovaUI() {
 
     if (!isLoggedIn) {
         if (showAuth) {
-            return <AuthPage onLogin={() => { setIsLoggedIn(true); setShowAuth(false); }} onBack={() => setShowAuth(false)} />;
+            return <AuthPage onLogin={(userData) => { setUser(userData); setIsLoggedIn(true); setShowAuth(false); }} onBack={() => setShowAuth(false)} />;
         }
 
         return (
@@ -541,12 +547,12 @@ export default function HangovaUI() {
                 </div>
 
                 <div className="user-profile">
-                    <div className="avatar">U</div>
+                    <div className="avatar">{user?.username?.[0]?.toUpperCase() || 'U'}</div>
                     <div className="user-details">
-                        <span className="username">User123</span>
+                        <span className="username">{user?.username || 'User123'}</span>
                         <span className="status">Online</span>
                     </div>
-                    <div className="profile-actions">⚙️</div>
+                    <div className="profile-actions"><Settings size={18} /></div>
                 </div>
             </aside>
 

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 interface AuthPageProps {
-    onLogin: () => void;
+    onLogin: (user: { username: string, email: string }) => void;
     onBack: () => void;
 }
 
@@ -342,8 +342,8 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                                 setEmailError("Failed to send verification code");
                             });
                         } else {
-                            // Direct login (TODO: implement real login API)
-                            onLogin();
+                            // Direct login
+                            onLogin({ username: email.split('@')[0] || "User", email });
                         }
                     }} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                         {authMode === "signup" && (
@@ -565,7 +565,7 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                                 if (data.error) {
                                     setOtpError(data.error);
                                 } else {
-                                    onLogin();
+                                    onLogin({ username, email });
                                 }
                             })
                             .catch(() => {

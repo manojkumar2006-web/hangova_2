@@ -25,7 +25,7 @@ export default function Background3D() {
     containerRef.current.appendChild(renderer.domElement);
 
     // Create Particles (Nodes)
-    const particleCount = 200;
+    const particleCount = 400;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -62,7 +62,7 @@ export default function Background3D() {
     const lineMaterial = new THREE.LineBasicMaterial({
       color: 0xffffff, // white line tint
       transparent: true,
-      opacity: 0.15,
+      opacity: 0.25,
     });
 
     const lineGeometry = new THREE.BufferGeometry();
@@ -77,7 +77,7 @@ export default function Background3D() {
         const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
         const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
         
-        if (dist < 60) {
+        if (dist < 90) {
           linePositions.push(
             positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
             positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]

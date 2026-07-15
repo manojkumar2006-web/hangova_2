@@ -49,13 +49,11 @@ h1, h2, h3, h4, h5, h6, .settings-title, .dashboard-title {
     display: flex;
     height: 100vh;
     width: 100vw;
-    backdrop-filter: blur(20px);
 }
 
 .servers-sidebar {
     width: 76px;
-    background-color: rgba(5, 5, 8, 0.4);
-    backdrop-filter: blur(12px);
+    background-color: rgba(5, 5, 8, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -164,8 +162,7 @@ h1, h2, h3, h4, h5, h6, .settings-title, .dashboard-title {
 /* --- Channels Sidebar --- */
 .channels-sidebar {
     width: 280px;
-    background-color: rgba(10, 10, 15, 0.35);
-    backdrop-filter: blur(12px);
+    background-color: rgba(10, 10, 15, 0.5);
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--glass-border);
@@ -307,8 +304,7 @@ h1, h2, h3, h4, h5, h6, .settings-title, .dashboard-title {
     display: flex;
     flex-direction: column;
     position: relative;
-    background: linear-gradient(180deg, rgba(10,10,15,0.2) 0%, rgba(5,5,8,0.4) 100%);
-    backdrop-filter: blur(12px);
+    background: linear-gradient(180deg, rgba(10,10,15,0.3) 0%, rgba(5,5,8,0.5) 100%);
 }
 
 .main-header {

@@ -40,12 +40,14 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
         if (!canvas) return;
 
         let animId: number;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let renderer: any, scene: any, camera: any, mesh: any, pointLight: any, ambientLight: any;
         let t = 0;
 
         const script = document.createElement("script");
         script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
         script.onload = () => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const THREE = (window as any).THREE;
 
             scene = new THREE.Scene();
@@ -335,7 +337,7 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                                     setAuthStep("otp");
                                 }
                             })
-                            .catch(err => {
+                            .catch(() => {
                                 setIsProcessing(false);
                                 setEmailError("Failed to send verification code");
                             });
@@ -493,10 +495,9 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                             {isProcessing ? "Processing..." : (authMode === "login" ? "Enter Hangova ✨" : "Join the Gang 🚀")}
                         </button>
                     </form>
-                    
-                    <p style={{ textAlign: "center", color: "rgba(255,255,255,0.25)", fontSize: "12px", marginTop: "24px" }}>
-                        By continuing, you agree to Hangova's Terms & Privacy Policy.
-                    </p>
+                                        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.25)", fontSize: "12px", marginTop: "24px" }}>
+                            By continuing, you agree to Hangova&apos;s Terms &amp; Privacy Policy.
+                        </p>
                     </>
                     ) : (
                     <>
@@ -507,7 +508,7 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                         </div>
                         <h2 style={{ fontSize: "24px", fontWeight: 700, margin: "0 0 12px" }}>Verify your email</h2>
                         <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", lineHeight: 1.5, marginBottom: "32px", maxWidth: "280px" }}>
-                            We've sent a 6-digit code to <br />
+                            We&apos;ve sent a 6-digit code to <br />
                             <strong style={{ color: "#fff" }}>{email}</strong>
                         </p>
 
@@ -574,7 +575,7 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                                     onLogin();
                                 }
                             })
-                            .catch(err => {
+                            .catch(() => {
                                 setIsProcessing(false);
                                 setOtpError("Verification failed");
                             });

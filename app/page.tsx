@@ -135,7 +135,7 @@ export default function HangovaUI() {
                 <div className="dashboard-area">
                     <h1 className="dashboard-title">Welcome back, User123 ✨</h1>
                     
-                    <h2 className="dashboard-section-title">🎬 Admin's Top Movie Picks</h2>
+                    <h2 className="dashboard-section-title">🎬 Admin&apos;s Top Movie Picks</h2>
                     <div className="media-row">
                         <div className="movie-card" style={{backgroundImage: `url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=400')`}}>
                             <div className="movie-info"><div className="movie-title">Interstellar</div></div>
@@ -193,7 +193,7 @@ export default function HangovaUI() {
                         <div className="msg-avatar admin-avatar">A</div>
                         <div className="msg-content">
                             <span className="msg-author">Admin <span className="badge">OWNER</span></span>
-                            <p className="msg-text">Here are the latest movies I've updated for you. Click any to start a watch party!</p>
+                            <p className="msg-text">Here are the latest movies I&apos;ve updated for you. Click any to start a watch party!</p>
                         </div>
                     </div>
                     

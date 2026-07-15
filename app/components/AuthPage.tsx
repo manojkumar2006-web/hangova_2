@@ -21,6 +21,13 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
+    
+    // OTP Flow
+    const [authStep, setAuthStep] = useState<"form" | "otp">("form");
+    const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+    const [otpError, setOtpError] = useState("");
+    const [isProcessing, setIsProcessing] = useState(false);
+    
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
     const lightIntensityRef = useRef(0);
@@ -113,8 +120,8 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
 
     // React to password visibility
     useEffect(() => {
-        targetIntensityRef.current = showPassword ? 1 : 0;
-    }, [showPassword]);
+        targetIntensityRef.current = (showPassword || showConfirmPassword) ? 1 : 0;
+    }, [showPassword, showConfirmPassword]);
 
     // 3D tilt on card
     const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -200,7 +207,7 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                     {/* Canvas glow bg */}
                     <div id="canvas-glow" style={{
                         position: "absolute", inset: 0,
-                        background: showPassword
+                        background: (showPassword || showConfirmPassword)
                             ? "radial-gradient(circle at center, rgba(139,92,246,0.25) 0%, transparent 70%)"
                             : "radial-gradient(circle at center, rgba(139,92,246,0.04) 0%, transparent 70%)",
                         transition: "background 0.8s ease",
@@ -214,16 +221,18 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
 
                     <p style={{
                         textAlign: "center", fontSize: "12px",
-                        color: showPassword ? "rgba(167,139,250,0.8)" : "rgba(255,255,255,0.2)",
+                        color: (showPassword || showConfirmPassword) ? "rgba(167,139,250,0.8)" : "rgba(255,255,255,0.2)",
                         marginTop: "16px", transition: "color 0.5s",
                         letterSpacing: "0.08em", textTransform: "uppercase",
                     }}>
-                        {showPassword ? "🔓 password visible" : "🔒 password hidden"}
+                        {(showPassword || showConfirmPassword) ? "🔓 password visible" : "🔒 password hidden"}
                     </p>
                 </div>
 
                 {/* RIGHT: Form */}
                 <div style={{ flex: 1, padding: "48px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                    {authStep === "form" ? (
+                    <>
                     {/* Logo */}
                     <div style={{ marginBottom: "32px" }}>
                         <h1 style={{
@@ -307,7 +316,18 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
 
                         if (hasError) return;
 
-                        onLogin();
+                        setIsProcessing(true);
+                        
+                        if (authMode === "signup") {
+                            // Simulate sending OTP
+                            setTimeout(() => {
+                                setIsProcessing(false);
+                                setAuthStep("otp");
+                            }, 1000);
+                        } else {
+                            // Direct login
+                            onLogin();
+                        }
                     }} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                         {authMode === "signup" && (
                             <div style={{ position: "relative" }}>
@@ -442,25 +462,120 @@ export default function AuthPage({ onLogin, onBack }: AuthPageProps) {
                             </div>
                         )}
 
-                        <button type="submit" style={{
+                        <button type="submit" disabled={isProcessing} style={{
                             width: "100%", padding: "15px",
                             background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
                             color: "#fff", border: "none", borderRadius: "12px",
-                            fontWeight: 700, fontSize: "16px", cursor: "pointer",
+                            fontWeight: 700, fontSize: "16px", cursor: isProcessing ? "wait" : "pointer",
                             marginTop: "8px",
+                            opacity: isProcessing ? 0.7 : 1,
                             boxShadow: "0 8px 24px rgba(139,92,246,0.35)",
                             transition: "transform 0.2s, box-shadow 0.2s",
                         }}
-                            onMouseOver={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.02)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 30px rgba(139,92,246,0.5)"; }}
-                            onMouseOut={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(139,92,246,0.35)"; }}
+                            onMouseOver={e => { if(!isProcessing) { (e.currentTarget as HTMLElement).style.transform = "scale(1.02)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 30px rgba(139,92,246,0.5)"; } }}
+                            onMouseOut={e => { if(!isProcessing) { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(139,92,246,0.35)"; } }}
                         >
-                            {authMode === "login" ? "Enter Hangova ✨" : "Join the Gang 🚀"}
+                            {isProcessing ? "Processing..." : (authMode === "login" ? "Enter Hangova ✨" : "Join the Gang 🚀")}
                         </button>
                     </form>
-
+                    
                     <p style={{ textAlign: "center", color: "rgba(255,255,255,0.25)", fontSize: "12px", marginTop: "24px" }}>
                         By continuing, you agree to Hangova's Terms & Privacy Policy.
                     </p>
+                    </>
+                    ) : (
+                    <>
+                    {/* OTP Verification Screen */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                        <div style={{ width: "64px", height: "64px", background: "rgba(139,92,246,0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px" }}>
+                            <span style={{ fontSize: "28px" }}>✉️</span>
+                        </div>
+                        <h2 style={{ fontSize: "24px", fontWeight: 700, margin: "0 0 12px" }}>Verify your email</h2>
+                        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", lineHeight: 1.5, marginBottom: "32px", maxWidth: "280px" }}>
+                            We've sent a 6-digit code to <br />
+                            <strong style={{ color: "#fff" }}>{email}</strong>
+                        </p>
+
+                        <div style={{ display: "flex", gap: "8px", marginBottom: "24px", justifyContent: "center" }}>
+                            {otp.map((digit, i) => (
+                                <input
+                                    key={i}
+                                    id={`otp-${i}`}
+                                    type="text"
+                                    maxLength={1}
+                                    value={digit}
+                                    onChange={e => {
+                                        const val = e.target.value.replace(/[^0-9]/g, "");
+                                        const newOtp = [...otp];
+                                        newOtp[i] = val;
+                                        setOtp(newOtp);
+                                        setOtpError("");
+                                        if (val && i < 5) {
+                                            document.getElementById(`otp-${i + 1}`)?.focus();
+                                        }
+                                    }}
+                                    onKeyDown={e => {
+                                        if (e.key === "Backspace" && !otp[i] && i > 0) {
+                                            document.getElementById(`otp-${i - 1}`)?.focus();
+                                        }
+                                    }}
+                                    style={{
+                                        width: "44px", height: "52px",
+                                        background: "rgba(255,255,255,0.05)",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        borderRadius: "12px",
+                                        color: "#fff", fontSize: "20px", fontWeight: 700,
+                                        textAlign: "center", outline: "none",
+                                        transition: "border-color 0.2s"
+                                    }}
+                                    onFocus={e => e.currentTarget.style.borderColor = "rgba(139,92,246,0.6)"}
+                                    onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"}
+                                />
+                            ))}
+                        </div>
+                        
+                        {otpError && (
+                            <p style={{ color: "rgba(239,68,68,0.9)", fontSize: "13px", margin: "-12px 0 20px" }}>⚠ {otpError}</p>
+                        )}
+
+                        <button onClick={() => {
+                            const code = otp.join("");
+                            if (code.length < 6) {
+                                setOtpError("Please enter all 6 digits");
+                                return;
+                            }
+                            // Mock verification
+                            setIsProcessing(true);
+                            setTimeout(() => {
+                                setIsProcessing(false);
+                                if (code === "123456") {
+                                    onLogin();
+                                } else {
+                                    setOtpError("Invalid code. Try 123456");
+                                }
+                            }, 1000);
+                        }} disabled={isProcessing} style={{
+                            width: "100%", padding: "15px",
+                            background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+                            color: "#fff", border: "none", borderRadius: "12px",
+                            fontWeight: 700, fontSize: "16px", cursor: isProcessing ? "wait" : "pointer",
+                            opacity: isProcessing ? 0.7 : 1,
+                            boxShadow: "0 8px 24px rgba(139,92,246,0.35)",
+                        }}>
+                            {isProcessing ? "Verifying..." : "Verify & Join"}
+                        </button>
+                        
+                        <div style={{ marginTop: "24px", display: "flex", gap: "16px", fontSize: "13px" }}>
+                            <button onClick={() => setAuthStep("form")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer" }}>
+                                ← Back
+                            </button>
+                            <button style={{ background: "none", border: "none", color: "rgba(139,92,246,0.8)", cursor: "pointer" }}>
+                                Resend Code
+                            </button>
+                        </div>
+                    </div>
+                    </>
+                    )}
                 </div>
             </div>
         </div>

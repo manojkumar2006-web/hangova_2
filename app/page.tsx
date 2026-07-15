@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import AuthPage from "./components/AuthPage";
+import { Home, Film, Music, Smartphone, MessageCircle, User, LogOut, Star, Flame, Hash, MonitorPlay, Settings, Palette, Bell, Lock, Search, Users, Plus, Smile } from "lucide-react";
 
 type Tab = "home" | "movies" | "music" | "reels" | "dms" | "profile";
 
@@ -78,11 +79,11 @@ export default function HangovaUI() {
                             className={`channel ${activeChannel === 'home-dash' ? 'active' : ''}`}
                             onClick={() => setActiveChannel('home-dash')}
                         >
-                            <span className="channel-icon">🌟</span> Discovery
+                            <span className="channel-icon"><Star size={18} /></span> Discovery
                         </div>
-                        <div className="channel"><span className="channel-icon">🔥</span> Trending Now</div>
+                        <div className="channel"><span className="channel-icon"><Flame size={18} /></span> Trending Now</div>
                         <div className="channel-category">Community</div>
-                        <div className="channel"><span className="channel-icon">#</span> general-chat</div>
+                        <div className="channel"><span className="channel-icon"><Hash size={18} /></span> general-chat</div>
                     </>
                 );
             case "movies":
@@ -96,9 +97,9 @@ export default function HangovaUI() {
                             className={`channel ${activeChannel === 'movie-room' ? 'active' : ''}`}
                             onClick={() => setActiveChannel('movie-room')}
                         >
-                            <span className="channel-icon">🛋️</span> Room 1 - Interstellar
+                            <span className="channel-icon"><MonitorPlay size={18} /></span> Room 1 - Interstellar
                         </div>
-                        <div className="channel"><span className="channel-icon">🍿</span> Room 2 - Chill</div>
+                        <div className="channel"><span className="channel-icon"><MonitorPlay size={18} /></span> Room 2 - Chill</div>
                     </>
                 );
             // ... omitting other tabs sidebar details for brevity but they follow same pattern
@@ -123,7 +124,7 @@ export default function HangovaUI() {
                         </div>
                         <div className="channel-category">Group Chats (Gangs)</div>
                         <div className="channel">
-                            <span className="channel-icon">👥</span> The Boys
+                            <span className="channel-icon"><Users size={18} /></span> The Boys
                         </div>
                     </>
                 );
@@ -138,26 +139,26 @@ export default function HangovaUI() {
                             className={`channel ${activeChannel === 'account' ? 'active' : ''}`}
                             onClick={() => setActiveChannel('account')}
                         >
-                            <span className="channel-icon">👤</span> My Account
+                            <span className="channel-icon"><User size={18} /></span> My Account
                         </div>
                         <div 
                             className={`channel ${activeChannel === 'appearance' ? 'active' : ''}`}
                             onClick={() => setActiveChannel('appearance')}
                         >
-                            <span className="channel-icon">🎨</span> Appearance
+                            <span className="channel-icon"><Palette size={18} /></span> Appearance
                         </div>
                         <div className="channel-category">App Settings</div>
                         <div 
                             className={`channel ${activeChannel === 'notifications' ? 'active' : ''}`}
                             onClick={() => setActiveChannel('notifications')}
                         >
-                            <span className="channel-icon">🔔</span> Notifications
+                            <span className="channel-icon"><Bell size={18} /></span> Notifications
                         </div>
                         <div 
                             className={`channel ${activeChannel === 'privacy' ? 'active' : ''}`}
                             onClick={() => setActiveChannel('privacy')}
                         >
-                            <span className="channel-icon">🔒</span> Privacy & Safety
+                            <span className="channel-icon"><Lock size={18} /></span> Privacy & Safety
                         </div>
                     </>
                 );
@@ -180,7 +181,7 @@ export default function HangovaUI() {
                 <div className="dashboard-area">
                     <h1 className="dashboard-title">Welcome back, User123 ✨</h1>
                     
-                    <h2 className="dashboard-section-title">🎬 Admin&apos;s Top Movie Picks</h2>
+                    <h2 className="dashboard-section-title">Admin&apos;s Top Movie Picks</h2>
                     <div className="media-row">
                         <div className="movie-card" style={{backgroundImage: `url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=400')`}}>
                             <div className="movie-info"><div className="movie-title">Interstellar</div></div>
@@ -193,7 +194,7 @@ export default function HangovaUI() {
                         </div>
                     </div>
 
-                    <h2 className="dashboard-section-title">🎵 Songs to Hear</h2>
+                    <h2 className="dashboard-section-title">Songs to Hear</h2>
                     <div className="media-row">
                         <div className="music-card">
                             <div className="music-cover" style={{backgroundImage: `url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=200')`}}></div>
@@ -209,7 +210,7 @@ export default function HangovaUI() {
                         </div>
                     </div>
 
-                    <h2 className="dashboard-section-title">👥 Recommended Gangs</h2>
+                    <h2 className="dashboard-section-title">Recommended Gangs</h2>
                     <div className="media-row">
                         <div className="group-card">
                             <div className="avatar">🍿</div>
@@ -451,9 +452,9 @@ export default function HangovaUI() {
                 
                 <div className="message-input-area">
                     <div className="input-wrapper">
-                        <button className="attach-btn">+</button>
+                        <button className="attach-btn"><Plus size={20} /></button>
                         <input type="text" placeholder={`Message in ${activeChannel}...`} className="message-input" />
-                        <button className="emoji-btn">😀</button>
+                        <button className="emoji-btn"><Smile size={20} /></button>
                     </div>
                 </div>
             </>
@@ -492,34 +493,34 @@ export default function HangovaUI() {
                     className={`server-icon home-icon tooltip ${activeTab === 'home' ? 'active' : ''}`} 
                     data-tooltip="Home"
                     onClick={() => handleTabSwitch("home", "home-dash")}
-                >H</div>
+                ><Home size={24} /></div>
                 <div className="server-separator"></div>
                 <div 
                     className={`server-icon gang-icon tooltip ${activeTab === 'movies' ? 'active' : ''}`} 
                     data-tooltip="Movies"
                     onClick={() => handleTabSwitch("movies", "movie-room")}
-                >🎬</div>
+                ><Film size={24} /></div>
                 <div 
                     className={`server-icon gang-icon tooltip ${activeTab === 'music' ? 'active' : ''}`} 
                     data-tooltip="Music"
                     onClick={() => handleTabSwitch("music", "music-general")}
-                >🎵</div>
+                ><Music size={24} /></div>
                 <div 
                     className={`server-icon gang-icon tooltip ${activeTab === 'reels' ? 'active' : ''}`} 
                     data-tooltip="Reels"
                     onClick={() => handleTabSwitch("reels", "reels-foryou")}
-                >📱</div>
+                ><Smartphone size={24} /></div>
                 <div className="server-separator"></div>
                 <div 
                     className={`server-icon gang-icon tooltip ${activeTab === 'dms' ? 'active' : ''}`} 
                     data-tooltip="DMs & Groups"
                     onClick={() => handleTabSwitch("dms", "admin")}
-                >💬</div>
+                ><MessageCircle size={24} /></div>
                 <div 
                     className={`server-icon gang-icon tooltip ${activeTab === 'profile' ? 'active' : ''}`} 
                     data-tooltip="Profile"
                     onClick={() => handleTabSwitch("profile", "account")}
-                >👤</div>
+                ><User size={24} /></div>
                 
                 {/* Logout Button */}
                 <div style={{ marginTop: 'auto', marginBottom: '16px' }}>
@@ -528,8 +529,7 @@ export default function HangovaUI() {
                         data-tooltip="Log Out"
                         onClick={() => setIsLoggedIn(false)}
                         style={{ border: '1px dashed #ef4444', color: '#ef4444' }}
-                    >
-                        🚪
+                    ><LogOut size={24} />
                     </div>
                 </div>
             </nav>
@@ -554,13 +554,13 @@ export default function HangovaUI() {
             <main className="main-content">
                 <header className="main-header">
                     <div className="header-title">
-                        <span className="channel-icon">{activeTab === 'dms' && activeChannel === 'admin' ? '🎬' : '💬'}</span> 
+                        <span className="channel-icon">{activeTab === "dms" && activeChannel === "admin" ? <Film size={24} /> : <MessageCircle size={24} />}</span> 
                         {activeTab === 'home' && activeChannel === 'home-dash' ? 'Discovery' : activeChannel}
                     </div>
                     <div className="header-actions">
-                        <button className="action-btn">🔍</button>
-                        <button className="action-btn">🔔</button>
-                        <button className="action-btn">👥</button>
+                        <button className="action-btn"><Search size={20} /></button>
+                        <button className="action-btn"><Bell size={20} /></button>
+                        <button className="action-btn"><Users size={20} /></button>
                     </div>
                 </header>
                 

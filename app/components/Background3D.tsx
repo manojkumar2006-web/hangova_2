@@ -30,8 +30,8 @@ export default function Background3D() {
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const color1 = new THREE.Color("#0ea5e9"); // Cyan
-    const color2 = new THREE.Color("#a855f7"); // Purple
+    const color1 = new THREE.Color("#ffffff"); // White
+    const color2 = new THREE.Color("#e2e8f0"); // Light Gray
 
     for (let i = 0; i < particleCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 600;
@@ -60,9 +60,9 @@ export default function Background3D() {
 
     // Create Lines (Edges)
     const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0x8b5cf6, // purple line tint
+      color: 0xffffff, // white line tint
       transparent: true,
-      opacity: 0.1,
+      opacity: 0.15,
     });
 
     const lineGeometry = new THREE.BufferGeometry();

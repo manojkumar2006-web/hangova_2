@@ -10,6 +10,17 @@ export default function HangovaUI() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showAuth, setShowAuth] = useState(false);
     const [activeChannel, setActiveChannel] = useState<string>("home-dash");
+    
+    // Settings State
+    const [settings, setSettings] = useState({
+        theme: "dark",
+        glowIntensity: 50,
+        pushNotifications: true,
+        emailAlerts: false,
+        onlineStatus: true,
+        readReceipts: true,
+    });
+
     const playerRef = useRef<HTMLDivElement>(null);
     const placeholderRef = useRef<HTMLDivElement>(null);
 
@@ -116,6 +127,40 @@ export default function HangovaUI() {
                         </div>
                     </>
                 );
+            case "profile":
+                return (
+                    <>
+                        <div className="sidebar-header">
+                            <h2>SETTINGS</h2>
+                        </div>
+                        <div className="channel-category">User Settings</div>
+                        <div 
+                            className={`channel ${activeChannel === 'account' ? 'active' : ''}`}
+                            onClick={() => setActiveChannel('account')}
+                        >
+                            <span className="channel-icon">👤</span> My Account
+                        </div>
+                        <div 
+                            className={`channel ${activeChannel === 'appearance' ? 'active' : ''}`}
+                            onClick={() => setActiveChannel('appearance')}
+                        >
+                            <span className="channel-icon">🎨</span> Appearance
+                        </div>
+                        <div className="channel-category">App Settings</div>
+                        <div 
+                            className={`channel ${activeChannel === 'notifications' ? 'active' : ''}`}
+                            onClick={() => setActiveChannel('notifications')}
+                        >
+                            <span className="channel-icon">🔔</span> Notifications
+                        </div>
+                        <div 
+                            className={`channel ${activeChannel === 'privacy' ? 'active' : ''}`}
+                            onClick={() => setActiveChannel('privacy')}
+                        >
+                            <span className="channel-icon">🔒</span> Privacy & Safety
+                        </div>
+                    </>
+                );
             default:
                 return (
                     <>
@@ -215,7 +260,161 @@ export default function HangovaUI() {
             );
         }
 
-        // 3. Default Chat/Room View
+        // 3. Profile & Settings View
+        if (activeTab === 'profile') {
+            return (
+                <div className="settings-container">
+                    {activeChannel === 'account' && (
+                        <div className="settings-section">
+                            <div className="settings-header">
+                                <h3 className="settings-title">My Account</h3>
+                                <p className="settings-subtitle">Manage your personal information and security.</p>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Profile Picture</h4>
+                                    <p>Update your avatar</p>
+                                </div>
+                                <div className="msg-avatar user-avatar" style={{width: '64px', height: '64px', fontSize: '24px', cursor: 'pointer'}}>U</div>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Username</h4>
+                                    <p>User123</p>
+                                </div>
+                                <button className="emoji-btn" style={{padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)'}}>Edit</button>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Email Address</h4>
+                                    <p>user@hangova.com</p>
+                                </div>
+                                <button className="emoji-btn" style={{padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)'}}>Edit</button>
+                            </div>
+                            <div className="setting-row" style={{marginTop: '20px', borderTop: '1px solid rgba(239,68,68,0.2)', paddingTop: '20px'}}>
+                                <div className="setting-info">
+                                    <h4 style={{color: '#ef4444'}}>Danger Zone</h4>
+                                </div>
+                                <button className="emoji-btn" style={{padding: '8px 16px', borderRadius: '8px', background: 'rgba(239,68,68,0.2)', color: '#ef4444'}}>Delete Account</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeChannel === 'appearance' && (
+                        <div className="settings-section">
+                            <div className="settings-header">
+                                <h3 className="settings-title">Appearance</h3>
+                                <p className="settings-subtitle">Customize how Hangova looks on your device.</p>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Theme</h4>
+                                    <p>Select your preferred color scheme</p>
+                                </div>
+                                <select 
+                                    className="settings-select"
+                                    value={settings.theme}
+                                    onChange={(e) => setSettings({...settings, theme: e.target.value})}
+                                >
+                                    <option value="dark">Hangova Dark</option>
+                                    <option value="cyberpunk">Neon Cyberpunk</option>
+                                    <option value="midnight">Midnight Blue</option>
+                                </select>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>UI Glow Intensity</h4>
+                                    <p>Adjust the neon bloom effects</p>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    className="settings-range" 
+                                    min="0" max="100" 
+                                    value={settings.glowIntensity}
+                                    onChange={(e) => setSettings({...settings, glowIntensity: parseInt(e.target.value)})}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {activeChannel === 'notifications' && (
+                        <div className="settings-section">
+                            <div className="settings-header">
+                                <h3 className="settings-title">Notifications</h3>
+                                <p className="settings-subtitle">Control when and how you are alerted.</p>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Push Notifications</h4>
+                                    <p>Receive alerts for messages and invites</p>
+                                </div>
+                                <label className="toggle-switch">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={settings.pushNotifications}
+                                        onChange={(e) => setSettings({...settings, pushNotifications: e.target.checked})}
+                                    />
+                                    <span className="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Email Alerts</h4>
+                                    <p>Receive daily summaries via email</p>
+                                </div>
+                                <label className="toggle-switch">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={settings.emailAlerts}
+                                        onChange={(e) => setSettings({...settings, emailAlerts: e.target.checked})}
+                                    />
+                                    <span className="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeChannel === 'privacy' && (
+                        <div className="settings-section">
+                            <div className="settings-header">
+                                <h3 className="settings-title">Privacy & Safety</h3>
+                                <p className="settings-subtitle">Manage who can see your activity.</p>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Online Status</h4>
+                                    <p>Let friends know when you're active</p>
+                                </div>
+                                <label className="toggle-switch">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={settings.onlineStatus}
+                                        onChange={(e) => setSettings({...settings, onlineStatus: e.target.checked})}
+                                    />
+                                    <span className="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div className="setting-row">
+                                <div className="setting-info">
+                                    <h4>Read Receipts</h4>
+                                    <p>Show others when you've read their messages</p>
+                                </div>
+                                <label className="toggle-switch">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={settings.readReceipts}
+                                        onChange={(e) => setSettings({...settings, readReceipts: e.target.checked})}
+                                    />
+                                    <span className="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // 4. Default Chat/Room View
         return (
             <>
                 {/* 3D Movie Player Mockup */}

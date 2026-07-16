@@ -1221,3 +1221,311 @@ input:checked + .toggle-slider:before {
     opacity: 0.3;
     cursor: not-allowed;
 }
+/* --- Movies View & Player --- */
+.movies-view-container {
+    width: 100%;
+    height: 100%;
+    padding: 32px;
+    background: #020204;
+    overflow-y: auto;
+}
+
+.movies-header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.movies-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.movies-header p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+}
+
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+}
+
+.movie-grid-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.movie-grid-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.movie-thumbnail {
+    width: 100%;
+    aspect-ratio: 2/3;
+    background: linear-gradient(45deg, #1a1a24, #2a2a35);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-icon {
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+}
+
+.movie-grid-card:hover .play-icon {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.movie-info {
+    padding: 16px;
+}
+
+.movie-info h3 {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-info p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+}
+
+.movies-empty, .movies-error, .movies-loading {
+    text-align: center;
+    padding: 64px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.movies-empty h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.movies-empty code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #4facfe;
+}
+
+/* Movie Player Overlay */
+.movie-player-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.movie-player-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #000;
+}
+
+.movie-video-element {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.player-close-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 50%;
+    padding: 8px;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+.player-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.player-close-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.player-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 24px 32px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    transition: opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.player-controls.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.progress-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4facfe;
+    border-radius: 3px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.player-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.controls-left, .controls-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn:hover {
+    transform: scale(1.1);
+    color: #4facfe;
+}
+
+.time-display {
+    color: #fff;
+    font-size: 14px;
+    font-family: monospace;
+}
+
+.volume-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.volume-slider {
+    width: 80px;
+    height: 4px;
+    accent-color: #4facfe;
+}
+
+.movie-player-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    margin-right: 16px;
+}
+
+.audio-toggle-btn.has-audio {
+    color: #4facfe;
+}
+
+.audio-menu {
+    position: absolute;
+    bottom: 90px;
+    right: 32px;
+    background: rgba(10, 10, 15, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 200px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.audio-menu h4 {
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+}
+
+.audio-track-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: left;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.audio-track-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.audio-track-btn.active {
+    color: #4facfe;
+    font-weight: bold;
+}

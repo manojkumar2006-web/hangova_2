@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import AuthPage from "./components/AuthPage";
+import ReelsView from "./components/ReelsView";
 import { Home, Film, Music, Smartphone, MessageCircle, User, LogOut, Star, Flame, Hash, MonitorPlay, Settings, Palette, Bell, Lock, Search, Users, Plus, Smile } from "lucide-react";
 
 type Tab = "home" | "movies" | "music" | "reels" | "dms" | "profile";
@@ -176,6 +177,10 @@ export default function HangovaUI() {
     };
 
     const renderMainContent = () => {
+        if (activeTab === 'reels') {
+            return <ReelsView />;
+        }
+
         // 1. Home Dashboard View
         if (activeTab === 'home' && activeChannel === 'home-dash') {
             return (
@@ -557,18 +562,20 @@ export default function HangovaUI() {
             </aside>
 
             {/* Main Content Area */}
-            <main className="main-content">
-                <header className="main-header">
-                    <div className="header-title">
-                        <span className="channel-icon">{activeTab === "dms" && activeChannel === "admin" ? <Film size={24} /> : <MessageCircle size={24} />}</span> 
-                        {activeTab === 'home' && activeChannel === 'home-dash' ? 'Discovery' : activeChannel}
-                    </div>
-                    <div className="header-actions">
-                        <button className="action-btn"><Search size={20} /></button>
-                        <button className="action-btn"><Bell size={20} /></button>
-                        <button className="action-btn"><Users size={20} /></button>
-                    </div>
-                </header>
+            <main className="main-content" style={{ padding: activeTab === 'reels' ? 0 : undefined }}>
+                {activeTab !== 'reels' && (
+                    <header className="main-header">
+                        <div className="header-title">
+                            <span className="channel-icon">{activeTab === "dms" && activeChannel === "admin" ? <Film size={24} /> : <MessageCircle size={24} />}</span> 
+                            {activeTab === 'home' && activeChannel === 'home-dash' ? 'Discovery' : activeChannel}
+                        </div>
+                        <div className="header-actions">
+                            <button className="action-btn"><Search size={20} /></button>
+                            <button className="action-btn"><Bell size={20} /></button>
+                            <button className="action-btn"><Users size={20} /></button>
+                        </div>
+                    </header>
+                )}
                 
                 {renderMainContent()}
 

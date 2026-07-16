@@ -1,64 +1,52 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Film, Play, FolderInput } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Film, Play, Star, Calendar } from 'lucide-react';
 import MoviePlayer from './MoviePlayer';
 
 export default function MoviesView() {
     const [movies, setMovies] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeMovie, setActiveMovie] = useState<any | null>(null);
-    const [isConnected, setIsConnected] = useState(false);
 
-    const connectFolder = async () => {
-        try {
-            setError(null);
-            
-            // Check if File System Access API is supported
-            if (!('showDirectoryPicker' in window)) {
-                throw new Error("Your browser does not support the File System Access API. Please use a modern browser like Chrome or Edge on desktop.");
-            }
-
-            setLoading(true);
-            
-            // @ts-ignore - TS might not know about showDirectoryPicker
-            const dirHandle = await window.showDirectoryPicker({
-                id: 'moviesFolder',
-                mode: 'read'
-            });
-
-            const foundMovies = [];
-
-            // @ts-ignore
-            for await (const entry of dirHandle.values()) {
-                if (entry.kind === 'file' && entry.name.toLowerCase().endsWith('.mp4')) {
-                    const file = await entry.getFile();
-                    foundMovies.push({
-                        file: file, // Keep the actual File object to stream it
-                        filename: entry.name,
-                        title: entry.name.replace('.mp4', '').replace(/\./g, ' '),
-                        sizeBytes: file.size,
-                    });
+    useEffect(() => {
+        const fetchTamilMovies = async () => {
+            try {
+                const token = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+                if (!token) {
+                    throw new Error("TMDB API Key not found in environment variables.");
                 }
-            }
 
-            setMovies(foundMovies);
-            setIsConnected(true);
-            setLoading(false);
-        } catch (err: any) {
-            console.error(err);
-            if (err.name !== 'AbortError') {
-                setError(err.message || "Failed to connect to folder.");
+                // Fetch Top Popular Tamil Movies
+                const res = await fetch('https://api.themoviedb.org/3/discover/movie?with_original_language=ta&sort_by=popularity.desc&page=1', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'accept': 'application/json'
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch movies: ${res.statusText}`);
+                }
+
+                const data = await res.json();
+                setMovies(data.results || []);
+                setLoading(false);
+            } catch (err: any) {
+                console.error(err);
+                setError(err.message);
+                setLoading(false);
             }
-            setLoading(false);
-        }
-    };
+        };
+
+        fetchTamilMovies();
+    }, []);
 
     if (activeMovie) {
         return (
             <MoviePlayer 
-                file={activeMovie.file} 
+                tmdbId={activeMovie.id} 
                 title={activeMovie.title} 
                 onClose={() => setActiveMovie(null)} 
             />
@@ -68,42 +56,56 @@ export default function MoviesView() {
     return (
         <div className="movies-view-container">
             <div className="movies-header">
-                <h1><Film className="inline-icon" /> Local Movies</h1>
-                <p>Stream your massive local movies instantly with zero buffering</p>
-                
-                {!isConnected && (
-                    <button className="connect-folder-btn" onClick={connectFolder} disabled={loading}>
-                        <FolderInput size={20} />
-                        {loading ? "Scanning..." : "Connect Local Movie Folder"}
-                    </button>
-                )}
+                <h1><Film className="inline-icon" /> Tamil Cinema</h1>
+                <p>The best of Kollywood, streaming instantly for you and your friends</p>
             </div>
 
-            {error ? (
-                <div className="movies-error">Error: {error}</div>
-            ) : isConnected && movies.length === 0 ? (
-                <div className="movies-empty">
-                    <h2>No MP4 movies found in that folder!</h2>
-                    <p>Make sure you select the folder containing your remuxed .mp4 files.</p>
-                    <button className="connect-folder-btn mt-4" onClick={connectFolder}>Try Another Folder</button>
+            {loading ? (
+                <div className="movies-loading">
+                    <div className="tmdb-spinner"></div>
+                    <p>Loading the Kollywood Library...</p>
                 </div>
-            ) : isConnected && movies.length > 0 ? (
-                <div className="movies-grid">
+            ) : error ? (
+                <div className="movies-error">
+                    <h2>Connection Error</h2>
+                    <p>{error}</p>
+                </div>
+            ) : movies.length > 0 ? (
+                <div className="tmdb-movies-grid">
                     {movies.map(movie => (
-                        <div key={movie.filename} className="movie-grid-card" onClick={() => setActiveMovie(movie)}>
-                            <div className="movie-thumbnail">
-                                <div className="movie-poster-placeholder">
-                                    <Play size={48} className="play-icon" />
+                        <div key={movie.id} className="tmdb-movie-card" onClick={() => setActiveMovie(movie)}>
+                            <div className="tmdb-poster-wrapper">
+                                {movie.poster_path ? (
+                                    <img 
+                                        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} 
+                                        alt={movie.title} 
+                                        className="tmdb-poster"
+                                        loading="lazy"
+                                    />
+                                ) : (
+                                    <div className="tmdb-poster-placeholder">
+                                        <Film size={48} />
+                                    </div>
+                                )}
+                                <div className="tmdb-hover-overlay">
+                                    <Play size={48} className="tmdb-play-icon" />
                                 </div>
                             </div>
-                            <div className="movie-info">
+                            <div className="tmdb-movie-info">
                                 <h3>{movie.title}</h3>
-                                <p>{(movie.sizeBytes / (1024 * 1024 * 1024)).toFixed(2)} GB</p>
+                                <div className="tmdb-movie-meta">
+                                    <span className="tmdb-rating"><Star size={14} className="star-icon" /> {movie.vote_average.toFixed(1)}</span>
+                                    <span className="tmdb-date"><Calendar size={14} /> {movie.release_date?.split('-')[0]}</span>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
-            ) : null}
+            ) : (
+                <div className="movies-empty">
+                    <h2>No Movies Found</h2>
+                </div>
+            )}
         </div>
     );
 }

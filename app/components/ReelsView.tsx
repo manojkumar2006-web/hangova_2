@@ -155,17 +155,34 @@ export default function ReelsView() {
     }, [currentFeed]);
 
     // Navigation functions
-    const scrollNext = () => {
+    const scrollNext = useCallback(() => {
         if (feedRef.current) {
             feedRef.current.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
         }
-    };
+    }, []);
 
-    const scrollPrev = () => {
+    const scrollPrev = useCallback(() => {
         if (feedRef.current) {
             feedRef.current.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
         }
-    };
+    }, []);
+
+    // Keyboard Navigation support
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Prevent default scrolling to ensure our smooth scroll handles it
+            if (e.key === 'PageDown' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                scrollNext();
+            } else if (e.key === 'PageUp' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                scrollPrev();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [scrollNext, scrollPrev]);
 
     return (
         <div className="reels-container">

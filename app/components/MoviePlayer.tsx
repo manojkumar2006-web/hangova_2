@@ -272,7 +272,7 @@ export default function MoviePlayer({ tmdbId, title, onClose }: MoviePlayerProps
                         renderCustomPlayer()
                     ) : (
                         <iframe 
-                            src={`https://vidsrc.cc/v2/embed/movie/${tmdbId}`} 
+                            src={`https://vidsrc.xyz/embed/movie?tmdb=${tmdbId}`} 
                             allowFullScreen 
                             className="api-iframe"
                             allow="autoplay; fullscreen"

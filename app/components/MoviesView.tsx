@@ -13,7 +13,7 @@ export default function MoviesView() {
     useEffect(() => {
         const fetchTamilMovies = async () => {
             try {
-                const token = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+                const token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMTgyM2UzNWVkODM1ZmRkMzBjYmY2MzZlZWUwM2NhNyIsIm5iZiI6MTc4NDE3NDE0Ny40OTgsInN1YiI6IjZhNTg1NjQzOThhYzA3OWRjYWViMTI2MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VYtlisSmav4ROnuQ_PsK9yohmCnseHLe95BNAOuY1BY";
                 if (!token) {
                     throw new Error("TMDB API Key not found in environment variables.");
                 }

@@ -15,7 +15,6 @@ async function remuxMovie(inputFile, outputFile) {
             '-i', inputFile,
             '-map', '0:v?',
             '-map', '0:a?',
-            '-map', '0:s?',
             '-c', 'copy',
             '-y', // Overwrite output files
             outputFile

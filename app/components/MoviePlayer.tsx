@@ -4,14 +4,15 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, X, Settings } from 'lucide-react';
 
 interface MoviePlayerProps {
-    filename: string;
+    file: File;
     title: string;
     onClose: () => void;
 }
 
-export default function MoviePlayer({ filename, title, onClose }: MoviePlayerProps) {
+export default function MoviePlayer({ file, title, onClose }: MoviePlayerProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [videoSrc, setVideoSrc] = useState<string>('');
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -23,6 +24,16 @@ export default function MoviePlayer({ filename, title, onClose }: MoviePlayerPro
     const [showAudioMenu, setShowAudioMenu] = useState(false);
 
     let controlsTimeout: NodeJS.Timeout;
+
+    // Create and cleanup object URL for the local file
+    useEffect(() => {
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        setVideoSrc(url);
+        return () => {
+            URL.revokeObjectURL(url);
+        };
+    }, [file]);
 
     useEffect(() => {
         const handleMouseMove = () => {
@@ -192,7 +203,7 @@ export default function MoviePlayer({ filename, title, onClose }: MoviePlayerPro
                 <video 
                     ref={videoRef}
                     className="movie-video-element"
-                    src={`/api/movies/stream?file=${encodeURIComponent(filename)}`}
+                    src={videoSrc}
                     onClick={togglePlay}
                     onTimeUpdate={handleTimeUpdate}
                     autoPlay

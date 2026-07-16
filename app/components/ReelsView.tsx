@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX, ChevronUp, ChevronDown } from 'lucide-react';
 
 // Simulated database of YouTube Shorts based on Language/Region and Taste
 const REELS_DB = {
@@ -154,6 +154,19 @@ export default function ReelsView() {
         }
     }, [currentFeed]);
 
+    // Navigation functions
+    const scrollNext = () => {
+        if (feedRef.current) {
+            feedRef.current.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+        }
+    };
+
+    const scrollPrev = () => {
+        if (feedRef.current) {
+            feedRef.current.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+        }
+    };
+
     return (
         <div className="reels-container">
             {/* Taste Chips Header */}
@@ -173,6 +186,16 @@ export default function ReelsView() {
             <button className="reels-mute-toggle" onClick={() => setIsMuted(!isMuted)}>
                 {isMuted ? <VolumeX size={24} color="#fff" /> : <Volume2 size={24} color="#fff" />}
             </button>
+
+            {/* Navigation Controls */}
+            <div className="reels-nav-controls">
+                <button className="nav-btn" onClick={scrollPrev} disabled={activeIndex === 0}>
+                    <ChevronUp size={32} />
+                </button>
+                <button className="nav-btn" onClick={scrollNext} disabled={activeIndex === currentFeed.length - 1}>
+                    <ChevronDown size={32} />
+                </button>
+            </div>
 
             {/* Scrollable Feed */}
             <div className="reels-feed" ref={feedRef}>
